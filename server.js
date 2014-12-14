@@ -6,7 +6,7 @@ var pg = require('pg');
 
 
 var port = process.env.PORT || 8080;
-var db = process.env.DATABASE_URL;
+var dbLoc = process.env.DATABASE_URL;
 
 var router = new LessSimpleRouter();
 var server = http.createServer(router.handleRequest.bind(router));
@@ -16,30 +16,40 @@ router.get('/pos/{pos}', function (request, response, args) {
 	response.end();
 
 	var pos = args.pos.split(',');
-	client.query('INSERT INTO locations VALUES (50.374686,-4.126134)', function (err, result) {
-		if (err) {
-			console.error(err);
+
+	var client = new pg.Client(dbLoc);
+	client.connect(function(err) {
+		if(err) {
+			return console.error("error "  + err);
+		} else {
+			client.query('INSERT INTO locations VALUES (' + pos[0] + ',' + pos[1] + ')', function (err, result) {
+				if (err) {
+					return console.error("error " + err);
+				} 
+				client.end();
+			});
 		}
-	})
-
-
+	});
 })
 
 router.get('/db', function (request, response, args) {
-	pg.connect(db, function (err, client, done) {
-		client.query('SELECT * FROM locations', function(err, result) {
-			done();
-
-
-			if(err){
-				console.error(err); response.send('Error ' + err);
-			} else {
-				response.writeHead(200, {"Content-Type": "text/plain"});
-				response.write(JSON.stringify(result.rows));
-				response.end();
-			}
-		})
-	})
+	var client = new pg.Client(dbLoc);
+	client.connect(function(err) {
+		if(err) {
+			return console.error("error "  + err);
+		} else {
+			client.query('SELECT * FROM locations', function (err, result) {
+				if (err) {
+					return console.error("error " + err);
+				} else {
+					response.writeHead(200, {"Content-Type": "application/json"});
+					response.write(JSON.stringify(result.rows));
+					response.end();
+				}
+				client.end();
+			});
+		}
+	});
 })
 
 router.error('404', function (req, res, args) {
