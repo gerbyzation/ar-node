@@ -4,6 +4,8 @@ var Url = require('url');
 var LessSimpleRouter = require('./LessSimpleRouter.js');
 var JsonFileLoader = require('./JsonFileLoader.js');
 var fs = require('fs');
+var pg = require('pg');
+
 
 var port = process.env.PORT || 8080;
 
@@ -39,6 +41,19 @@ router.get('/pos/{pos}', function (request, response, args) {
 		jsonList.push(obj);
 
 		fs.writeFile('data.json', JSON.stringify(jsonList), 'utf8');
+	})
+})
+
+router.get('/cb/', function (request, response, args) {
+	pg.connect(process.env.DATABSE_URL, function (err, cleint, done) {
+		client.query('SELECT * FROM test_table', function(err, result) {
+			done();
+			if(err){
+				console.error(err); response.send('Error ' + err);
+			} else {
+				response.send(result.rows);
+			}
+		})
 	})
 })
 
