@@ -8,6 +8,7 @@ var pg = require('pg');
 
 
 var port = process.env.PORT || 8080;
+var db = process.env.DATABASE_URL;
 
 // load data file
 var json = new JsonFileLoader('./data.json');
@@ -44,9 +45,9 @@ router.get('/pos/{pos}', function (request, response, args) {
 	})
 })
 
-router.get('/cb/', function (request, response, args) {
-	pg.connect(process.env.DATABSE_URL, function (err, cleint, done) {
-		client.query('SELECT * FROM test_table', function(err, result) {
+router.get('/db', function (request, response, args) {
+	pg.connect(db, function (err, cleint, done) {
+		client.query('SELECT * FROM locations', function(err, result) {
 			done();
 			if(err){
 				console.error(err); response.send('Error ' + err);
