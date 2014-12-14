@@ -46,7 +46,7 @@ router.get('/pos/{pos}', function (request, response, args) {
 })
 
 router.get('/db', function (request, response, args) {
-	pg.connect(db, function (err, cleint, done) {
+	pg.connect(db, function (err, client, done) {
 		client.query('SELECT * FROM locations', function(err, result) {
 			done();
 			if(err){
