@@ -52,7 +52,7 @@ router.get('/db', function (request, response, args) {
 			if(err){
 				console.error(err); response.send('Error ' + err);
 			} else {
-				response.send(result.rows);
+				response.setHeader(result.rows);
 			}
 		})
 	})
