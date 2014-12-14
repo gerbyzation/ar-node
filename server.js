@@ -16,7 +16,7 @@ router.get('/pos/{pos}', function (request, response, args) {
 	response.end();
 
 	var pos = args.pos.split(',');
-	client.query('INSERT INTO locations VALUES (50.374686,-4.126134)' function (err, result) {
+	client.query('INSERT INTO locations VALUES (50.374686,-4.126134)', function (err, result) {
 		if (err) {
 			console.error(err);
 		}
