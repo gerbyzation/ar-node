@@ -25,7 +25,11 @@ router.get('/pos/{pos}', function (request, response, args) {
 			client.query('INSERT INTO locations VALUES (' + pos[0] + ',' + pos[1] + ')', function (err, result) {
 				if (err) {
 					return console.error("error " + err);
-				} 
+				} else {
+					response.writeHead(200, {"Content-Type": "text/plain"});
+					response.write("succes");
+					response.end();
+				}
 				client.end();
 			});
 		}
@@ -60,11 +64,8 @@ router.error('404', function (req, res, args) {
 server.listen(port, function() {
 	console.log("Server listening at " + port);
 });
-
 server.listen(port);
 
 /* Test data: 
-
 /pos/50.374686,-4.126134
-
 */
